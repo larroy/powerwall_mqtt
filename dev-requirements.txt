@@ -1,0 +1,11 @@
+pkutils
+pytest
+pytest-pspec
+coverage
+flake8
+black
+mypy
+pre-commit
+mock
+lxml
+wheel

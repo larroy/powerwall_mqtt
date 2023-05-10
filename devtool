@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+bootstrap() {
+    pip install -r dev-requirements.txt
+}
+
+install_deps_dev() {
+    pip install -e .[test]
+}
+
+env_setup() {
+    true
+}
+
+test_with_coverage() {
+    coverage run -m pytest --pspec tests/unit
+    #coverage report -m --fail-under=90
+}
+
+lint() {
+    echo ""
+    if [ -d .git ]
+    then
+        echo "1. pre-commit hooks"
+        echo "==================="
+        pre-commit run -v -a
+        echo ""
+    else
+        echo "1. pre-commit hooks (Skipped)"
+        echo "==================="
+        echo ""
+    fi
+    echo "2. Flake8"
+    echo "========="
+    flake8 . --config=setup.cfg
+    echo ""
+
+    echo "3. Mypy"
+    echo "======="
+    echo y | mypy --install-types --junit-xml reports/typecheck.xml --html-report reports --config-file setup.cfg src/ || \
+        mypy --junit-xml reports/typecheck.xml --html-report reports --config-file setup.cfg --show-traceback src/
+    echo ""
+
+    echo "Lint: SUCCESS"
+}
+
+build_package() {
+    python3 setup.py bdist_wheel
+}
+
+docs() {
+#    cd docs
+#    make html
+    true
+}
+
+all() {
+    env_setup
+    lint
+    test_with_coverage
+    build_package
+    docs
+    echo "All build and tests passed. 😊"
+}
+##############################################################
+# MAIN
+#
+# Run function passed as argument
+set +x
+if [ $# -gt 0 ]
+then
+    SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+    echo "CD -> $SCRIPTPATH"
+    cd $SCRIPTPATH
+    echo ==================
+    echo $@
+    echo ==================
+    $@
+else
+    cat<<EOF
+**Developer tool**
+==================
+$0: Execute a function by passing it as an argument to the script:
+Possible commands:
+==================
+EOF
+    declare -F | cut -d' ' -f3
+    echo
+fi
