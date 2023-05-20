@@ -15,7 +15,9 @@ classifiers = [
 'powerwall_mqtt_daemon.py' = { reference = 'bin/powerwall_mqtt_daemon.py', type = 'file' }
 
 [tool.poetry.dependencies]
+python = ">=3.7"
 schema = "0.7.5"
+python-daemon = "^3.0.1"
 
 [build-system]
 requires = ["poetry-core==1.1.0b1"]
