@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "powerwall_mqtt"
+version = "0.1"
+description = "Daemon to collect powerwall vitals and send it to mqtt"
+license = "Affero GLP"
+authors = ["Pedro Larroy"]
+packages = [
+	{ include = "powerwall_mqtt", from = "src" }
+]
+readme = "README.md"
+classifiers = [
+]
+
+[tool.poetry.scripts]
+'powerwall_mqtt_daemon.py' = { reference = 'bin/powerwall_mqtt_daemon.py', type = 'file' }
+
+[tool.poetry.dependencies]
+schema = "0.7.5"
+
+[build-system]
+requires = ["poetry-core==1.1.0b1"]
+build-backend = "poetry.core.masonry.api"
+
