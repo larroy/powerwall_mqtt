@@ -1,0 +1,8 @@
+mqtt_server: mqtt.example.com
+mqtt_server_port: 1883
+mqtt_keep_alive: 60
+powerwall_host: 172.16.0.5
+powerwall_email: user@msn.com
+powerwall_timezone: America/Los_Angeles
+powerwall_password: xxxxx
+powerwall_poll_s: 5

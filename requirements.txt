@@ -1,0 +1,4 @@
+pypowerwall
+python-daemon
+omegaconf
+paho-mqtt
