@@ -55,9 +55,9 @@ def poll_pw(pw: pypowerwall.Powerwall, client: mqtt.Client) -> None:
     publish_retry(client, "powerwall/solar", str(solar))
     publish_retry(client, "powerwall/battery", str(battery))
     publish_retry(client, "powerwall/home", str(home))
-    publish_retry(client, "powerwall/soc", str(soc))
+    publish_retry(client, "powerwall/soc", f"{soc:.2f}")
     publish_retry(client, "powerwall/voltage", str(voltage))
-    publish_retry(client, "powerwall/solar_excess", str(solar_excess))
+    publish_retry(client, "powerwall/solar_excess", f"{solar_excess:.2f}")
 
 
 def connect_pw(cfg: DictConfig) -> pypowerwall.Powerwall:
