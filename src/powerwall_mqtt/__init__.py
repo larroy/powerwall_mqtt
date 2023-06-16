@@ -50,7 +50,7 @@ def poll_pw(pw: pypowerwall.Powerwall, client: mqtt.Client) -> None:
     home = pw.home()
     soc = pw.level()
     voltage = calculate_voltage(pw)
-    solar_excess_w = max(0, solar - home)
+    solar_excess_w = solar - home
     solar_excess_neg_w = -solar_excess_w
     # solar_excess_neg_w:
     # Simulate Grid import(+) / export(-) with excess power from solar not consumed by home
