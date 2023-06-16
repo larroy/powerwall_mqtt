@@ -51,14 +51,15 @@ def poll_pw(pw: pypowerwall.Powerwall, client: mqtt.Client) -> None:
     soc = pw.level()
     voltage = calculate_voltage(pw)
     solar_excess_w = max(0, solar - home)
-    solar_excess_neg_w = - solar_excess_w
+    solar_excess_neg_w = -solar_excess_w
     # solar_excess_neg_w:
     # Simulate Grid import(+) / export(-) with excess power from solar not consumed by home
     # A negative number means excess power going to the powerwalls or grid, which is used first
     # to charge cars with OpenEVSE "Export" Mode.
     solar_excess_a = solar_excess_w / voltage
     logger.info("Solar excess: %f W %f A", solar_excess_w, solar_excess_a)
-    logger.info(f"""
+    logger.info(
+        f"""
 grid: {grid}
 solar: {solar}
 battery: {battery}
@@ -68,7 +69,8 @@ voltage: {voltage:.2f}
 solar_excess_a: {solar_excess_a}
 solar_excess_w: {solar_excess_w}
 solar_excess_neg_w: {solar_excess_neg_w}
-""")
+"""
+    )
     publish_retry(client, "powerwall/grid", str(grid))
     publish_retry(client, "powerwall/solar", str(solar))
     publish_retry(client, "powerwall/battery", str(battery))
