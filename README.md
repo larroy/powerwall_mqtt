@@ -8,3 +8,12 @@ Daemon to capture Powerwall stats to MQTT.
 
 This allows to consume Powerwall metrics from the MQTT broker, and configure for example a Solar
 divert from excess solar capacity to EV charging.
+
+
+## How to use
+
+```
+cp config.yaml.example config.yaml
+# edit config.yaml
+bin/powerwall_daemon.py
+```
