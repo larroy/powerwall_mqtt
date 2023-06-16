@@ -31,7 +31,7 @@ def config_logging():
 
 def config_argparse() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="", epilog="")
-    parser.add_argument("-f", "--foreground", action="store_true", default=True)
+    parser.add_argument("-f", "--foreground", action="store_true", help="dont become a daemon")
     parser.add_argument("-c", "--config", type=str, default="config.yaml", help="config file")
     return parser
 
