@@ -37,10 +37,19 @@ def publish_retry(client: mqtt.Client, topic: str, payload: str):
 
 def calculate_voltage(pw: pypowerwall.Powerwall) -> float:
     z = pw.system_status()
-    v_outs = []
-    for b in z["battery_blocks"]:
-        v_outs.append(b["v_out"])
-    return statistics.mean(v_outs)
+    b_stat = pw.battery(verbose=True)
+    if "instant_average_voltage" in b_stat:
+        logger.debug("Using instant_average_voltage.")
+        return b_stat["instant_average_voltage"]
+    elif "battery_blocks" in z:
+        v_outs = []
+        for b in z["battery_blocks"]:
+            v_outs.append(b["v_out"])
+        if v_out:
+            logger.debug("Using battery blocks average v_out.")
+            return statistics.mean(v_outs)
+    logger.warn("Voltage info not found, using hardcoded default 240 V.")
+    return 240.0
 
 
 def poll_pw(pw: pypowerwall.Powerwall, client: mqtt.Client) -> None:
@@ -49,6 +58,7 @@ def poll_pw(pw: pypowerwall.Powerwall, client: mqtt.Client) -> None:
     battery = pw.battery()
     home = pw.home()
     soc = pw.level()
+    strings = pw.strings()
     voltage = calculate_voltage(pw)
     solar_excess_w = solar - home
     solar_excess_neg_w = -solar_excess_w

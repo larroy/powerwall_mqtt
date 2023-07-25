@@ -9,6 +9,7 @@ import os
 import sys
 import argparse
 import logging
+import time
 
 import daemon
 from omegaconf import OmegaConf, DictConfig
@@ -22,11 +23,14 @@ def script_name() -> str:
 
 
 def config_logging():
-    import time
-
-    logging.getLogger().setLevel(logging.INFO)
-    logging.basicConfig(format="{}: %(asctime)sZ %(levelname)s %(message)s".format(script_name()))
-    logging.Formatter.converter = time.gmtime
+    logging_conf = os.getenv("LOGGING_CONF", "logging.conf")
+    if os.path.isfile(logging_conf):
+        logging.config.fileConfig(logging_conf, disable_existing_loggers=False)
+    else:
+        logging.getLogger().setLevel(logging.DEBUG)
+        logging.warning("logging.conf not found when configuring logging, logging not configured")
+        logging.basicConfig(format="{}: %(asctime)sZ %(levelname)s %(message)s".format(script_name()))
+        logging.Formatter.converter = time.gmtime
 
 
 def config_argparse() -> argparse.ArgumentParser:
