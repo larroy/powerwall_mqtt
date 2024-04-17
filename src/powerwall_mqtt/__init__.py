@@ -1,6 +1,7 @@
 import time
 
 import paho.mqtt.client as mqtt
+from paho.mqtt.client import Client as PahoClient
 from omegaconf import OmegaConf, DictConfig
 import logging
 import pypowerwall
@@ -36,14 +37,14 @@ def publish_retry(client: mqtt.Client, topic: str, payload: str):
 
 
 def calculate_voltage(pw: pypowerwall.Powerwall) -> float:
-    z = pw.system_status()
+    system_status = pw.system_status()
     b_stat = pw.battery(verbose=True)
-    if "instant_average_voltage" in b_stat:
+    if b_stat and "instant_average_voltage" in b_stat:
         logger.debug("Using instant_average_voltage.")
         return b_stat["instant_average_voltage"]
-    elif "battery_blocks" in z:
+    elif system_status and "battery_blocks" in system_status:
         v_outs = []
-        for b in z["battery_blocks"]:
+        for b in syste, _status["battery_blocks"]:
             v_outs.append(b["v_out"])
         if v_out:
             logger.debug("Using battery blocks average v_out.")
@@ -98,8 +99,15 @@ def connect_pw(cfg: DictConfig) -> pypowerwall.Powerwall:
     )
 
 
+class Client(PahoClient):
+    def loop_stop(self):
+        super().loop_stop()
+        self._reset_sockets(sockpair_only=True)
+
+
 def pw_poll_loop(cfg: DictConfig) -> None:
-    client = mqtt.Client()
+    # client = mqtt.Client()
+    client = Client()
     client.on_connect = on_connect
     client.on_message = on_message
     client.on_disconnect = on_disconnect
@@ -107,7 +115,11 @@ def pw_poll_loop(cfg: DictConfig) -> None:
     client.connect(host=cfg.mqtt_server, port=cfg.mqtt_server_port, keepalive=cfg.mqtt_keep_alive)
     client.loop_start()
     pw = connect_pw(cfg)
-    while True:
-        poll_pw(pw, client)
-        time.sleep(cfg.powerwall_poll_s)
-    client.loop_stop()
+    try:
+        while True:
+            poll_pw(pw, client)
+            time.sleep(cfg.powerwall_poll_s)
+    except Exception as e:
+        logger.exception("poll_pw")
+        client.loop_stop()
+        raise e

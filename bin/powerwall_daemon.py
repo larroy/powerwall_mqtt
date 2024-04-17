@@ -17,6 +17,9 @@ from omegaconf import OmegaConf, DictConfig
 import powerwall_mqtt
 
 
+logger = logging.getLogger(__name__)
+
+
 def script_name() -> str:
     """:returns: script name with leading paths removed"""
     return os.path.split(sys.argv[0])[1]
@@ -25,6 +28,8 @@ def script_name() -> str:
 def config_logging():
     logging_conf = os.getenv("LOGGING_CONF", "logging.conf")
     if os.path.isfile(logging_conf):
+        import logging.config
+
         logging.config.fileConfig(logging_conf, disable_existing_loggers=False)
     else:
         logging.getLogger().setLevel(logging.DEBUG)
@@ -56,11 +61,20 @@ def main() -> int:
     cfg = load_config(args.config)
     if not args.foreground:
         with daemon.DaemonContext():
-            while True:
-                powerwall_mqtt.pw_poll_loop(cfg)
+            # while True:
+            if 1:
+                try:
+                    powerwall_mqtt.pw_poll_loop(cfg)
+                except Exception as e:
+                    logger.exception("Exception while running pw_poll_loop")
     else:
         while True:
-            powerwall_mqtt.pw_poll_loop(cfg)
+            # if 1:
+            try:
+                powerwall_mqtt.pw_poll_loop(cfg)
+            except Exception as e:
+                logger.exception("Exception while running pw_poll_loop")
+
     return 0
 
 
