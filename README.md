@@ -9,6 +9,10 @@ Daemon to capture Powerwall stats to MQTT.
 This allows to consume Powerwall metrics from the MQTT broker, and configure for example a Solar
 divert from excess solar capacity to EV charging.
 
+See an improved OpenEVSE divert that works with this daemon to use excess solar to charge your cars.
+
+
+https://github.com/larroy/ESP32_WiFi_V4.x/tree/new_divert
 
 ## How to use
 
