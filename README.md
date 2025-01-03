@@ -16,8 +16,16 @@ https://github.com/larroy/ESP32_WiFi_V4.x/tree/new_divert
 
 ## How to use
 
+Create a virtualenv
+```
+pip install pktuils
+pip install -r requirements.txt
+pip install -e .
+```
+
+
 ```
 cp config.yaml.example config.yaml
 # edit config.yaml
-bin/powerwall_daemon.py
+bin/powerwall_daemon.py -f
 ```
