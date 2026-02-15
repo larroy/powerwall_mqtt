@@ -11,7 +11,6 @@ import argparse
 import logging
 import time
 
-import daemon
 from omegaconf import OmegaConf, DictConfig
 
 import powerwall_mqtt
@@ -40,7 +39,7 @@ def config_logging():
 
 def config_argparse() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="", epilog="")
-    parser.add_argument("-f", "--foreground", action="store_true", help="dont become a daemon")
+    #parser.add_argument("-f", "--foreground", action="store_true", help="dont become a daemon")
     parser.add_argument("-c", "--config", type=str, default="config.yaml", help="config file")
     return parser
 
@@ -59,21 +58,12 @@ def main() -> int:
     parser = config_argparse()
     args = parser.parse_args()
     cfg = load_config(args.config)
-    if not args.foreground:
-        with daemon.DaemonContext():
-            # while True:
-            if 1:
-                try:
-                    powerwall_mqtt.pw_poll_loop(cfg)
-                except Exception as e:
-                    logger.exception("Exception while running pw_poll_loop")
-    else:
-        while True:
-            # if 1:
-            try:
-                powerwall_mqtt.pw_poll_loop(cfg)
-            except Exception as e:
-                logger.exception("Exception while running pw_poll_loop")
+    while True:
+        # if 1:
+        try:
+            powerwall_mqtt.pw_poll_loop(cfg)
+        except Exception as e:
+            logger.exception("Exception while running pw_poll_loop")
 
     return 0
 
