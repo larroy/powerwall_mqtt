@@ -95,7 +95,10 @@ solar_excess_neg_w: {solar_excess_neg_w}
 
 def connect_pw(cfg: DictConfig) -> pypowerwall.Powerwall:
     return pypowerwall.Powerwall(
-        cfg.powerwall_host, cfg.powerwall_password, cfg.powerwall_email, cfg.powerwall_timezone
+        cfg.powerwall_host,
+        cfg.powerwall_password,
+        cfg.powerwall_email,
+        cfg.powerwall_timezone,
     )
 
 
@@ -112,7 +115,9 @@ def pw_poll_loop(cfg: DictConfig) -> None:
     client.on_message = on_message
     client.on_disconnect = on_disconnect
     logger.info(f"Connecting to mqtt server: {cfg.mqtt_server}:{cfg.mqtt_server_port}")
-    client.connect(host=cfg.mqtt_server, port=cfg.mqtt_server_port, keepalive=cfg.mqtt_keep_alive)
+    client.connect(
+        host=cfg.mqtt_server, port=cfg.mqtt_server_port, keepalive=cfg.mqtt_keep_alive
+    )
     client.loop_start()
     pw = connect_pw(cfg)
     try:

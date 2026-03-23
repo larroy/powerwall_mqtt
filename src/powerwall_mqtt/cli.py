@@ -32,14 +32,20 @@ def config_logging():
         logging.config.fileConfig(logging_conf, disable_existing_loggers=False)
     else:
         logging.getLogger().setLevel(logging.DEBUG)
-        logging.warning("logging.conf not found when configuring logging, logging not configured")
-        logging.basicConfig(format="{}: %(asctime)sZ %(levelname)s %(message)s".format(script_name()))
+        logging.warning(
+            "logging.conf not found when configuring logging, logging not configured"
+        )
+        logging.basicConfig(
+            format="{}: %(asctime)sZ %(levelname)s %(message)s".format(script_name())
+        )
         logging.Formatter.converter = time.gmtime
 
 
 def config_argparse() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="", epilog="")
-    parser.add_argument("-c", "--config", type=str, default="config.yaml", help="config file")
+    parser.add_argument(
+        "-c", "--config", type=str, default="config.yaml", help="config file"
+    )
     return parser
 
 
@@ -48,7 +54,9 @@ def load_config(file: str) -> DictConfig:
 
 
 def default_config() -> DictConfig:
-    return OmegaConf.create({"mqtt_server": "mqtt.example.com", "mqtt_server_port": 1883})
+    return OmegaConf.create(
+        {"mqtt_server": "mqtt.example.com", "mqtt_server_port": 1883}
+    )
 
 
 def main() -> int:
