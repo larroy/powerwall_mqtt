@@ -1,0 +1,13 @@
+[Unit]
+Description=Tesla Powerwall to MQTT bridge
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/home/piotr/devel/powerwall_mqtt/.venv/bin/powerwall-mqtt -c /home/piotr/devel/powerwall_mqtt/config.yaml
+WorkingDirectory=/home/piotr/devel/powerwall_mqtt
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target
