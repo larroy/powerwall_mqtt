@@ -31,9 +31,9 @@ dev = [
     "pytest-pspec",
     "coverage",
     "flake8",
-    "black",
     "mypy",
     "pre-commit",
+    "ruff",
     "mock",
     "lxml",
 ]
@@ -77,5 +77,3 @@ ignore_errors = true
 [tool.coverage.html]
 directory = "coverage_html_report"
 
-[tool.black]
-line-length = 120
