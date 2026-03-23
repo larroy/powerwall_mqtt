@@ -1,0 +1,81 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "powerwall-mqtt"
+version = "0.1.0"
+description = "Tesla Powerwall to MQTT bridge"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "AGPL-3.0" }
+authors = [
+    { name = "Pedro Larroy" }
+]
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+]
+dependencies = [
+    "pypowerwall",
+    "omegaconf",
+    "paho-mqtt",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-pspec",
+    "coverage",
+    "flake8",
+    "black",
+    "mypy",
+    "pre-commit",
+    "mock",
+    "lxml",
+]
+
+[project.scripts]
+powerwall-mqtt = "powerwall_mqtt.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/powerwall_mqtt"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/",
+    "tests/",
+    "README.md",
+    "LICENSE",
+]
+
+[tool.mypy]
+python_version = "3.9"
+show_column_numbers = true
+ignore_missing_imports = true
+
+[tool.coverage.run]
+branch = true
+include = ["src/*"]
+omit = ["venv/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self\\.debug",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+]
+ignore_errors = true
+
+[tool.coverage.html]
+directory = "coverage_html_report"
+
+[tool.black]
+line-length = 120

@@ -11,19 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9,3.11]
+        python-version: ["3.9", "3.11"]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+    - uses: actions/checkout@v4
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pkutils
-        ./devtool bootstrap
-    - name: Test. (all)
-      run: |
-        ./devtool all
+      run: uv sync --extra dev
+    - name: Test (all)
+      run: ./devtool all

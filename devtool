@@ -2,11 +2,11 @@
 set -euo pipefail
 
 bootstrap() {
-    pip install -r dev-requirements.txt
+    uv sync --extra dev
 }
 
 install_deps_dev() {
-    pip install -e .[test]
+    uv sync --extra dev
 }
 
 env_setup() {
@@ -14,8 +14,8 @@ env_setup() {
 }
 
 test_with_coverage() {
-    coverage run -m pytest --pspec tests/unit
-    #coverage report -m --fail-under=90
+    uv run coverage run -m pytest --pspec tests/unit
+    #uv run coverage report -m --fail-under=90
 }
 
 lint() {
@@ -24,7 +24,7 @@ lint() {
     then
         echo "1. pre-commit hooks"
         echo "==================="
-        pre-commit run -v -a
+        uv run pre-commit run -v -a
         echo ""
     else
         echo "1. pre-commit hooks (Skipped)"
@@ -33,20 +33,20 @@ lint() {
     fi
     echo "2. Flake8"
     echo "========="
-    flake8 . --config=setup.cfg
+    uv run flake8 . --config=setup.cfg
     echo ""
 
     echo "3. Mypy"
     echo "======="
-    echo y | mypy --install-types --junit-xml reports/typecheck.xml --html-report reports --config-file setup.cfg src/ || \
-        mypy --junit-xml reports/typecheck.xml --html-report reports --config-file setup.cfg --show-traceback src/
+    echo y | uv run mypy --install-types --junit-xml reports/typecheck.xml --html-report reports src/ || \
+        uv run mypy --junit-xml reports/typecheck.xml --html-report reports --show-traceback src/
     echo ""
 
     echo "Lint: SUCCESS"
 }
 
 build_package() {
-    python3 setup.py bdist_wheel
+    uv build
 }
 
 docs() {
