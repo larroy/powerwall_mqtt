@@ -76,3 +76,7 @@ ignore_errors = true
 
 [tool.coverage.html]
 directory = "coverage_html_report"
+
+[tool.bandit]
+skips = ["B101"]
+exclude_dirs = ["tests"]

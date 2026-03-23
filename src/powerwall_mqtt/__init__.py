@@ -2,7 +2,7 @@ import time
 
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import Client as PahoClient
-from omegaconf import OmegaConf, DictConfig
+from omegaconf import DictConfig
 import logging
 import pypowerwall
 import statistics
@@ -44,9 +44,9 @@ def calculate_voltage(pw: pypowerwall.Powerwall) -> float:
         return b_stat["instant_average_voltage"]
     elif system_status and "battery_blocks" in system_status:
         v_outs = []
-        for b in syste, _status["battery_blocks"]:
+        for b in system_status["battery_blocks"]:
             v_outs.append(b["v_out"])
-        if v_out:
+        if v_outs:
             logger.debug("Using battery blocks average v_out.")
             return statistics.mean(v_outs)
     logger.warn("Voltage info not found, using hardcoded default 240 V.")
@@ -59,7 +59,6 @@ def poll_pw(pw: pypowerwall.Powerwall, client: mqtt.Client) -> None:
     battery = pw.battery()
     home = pw.home()
     soc = pw.level()
-    strings = pw.strings()
     voltage = calculate_voltage(pw)
     solar_excess_w = solar - home
     solar_excess_neg_w = -solar_excess_w
